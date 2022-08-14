@@ -15,6 +15,10 @@ fun main(args: Array<String>) {
     }
 
     details.forEach(::println)
+    println()
+    val random = providers.getAllProviders("Random")
+    random.forEach(::println)
+
 }
 
 data class ProviderDetails(val providerName: String, val name: String)
@@ -25,6 +29,19 @@ class Providers {
 
         return providers.asList()
     }
+
+    fun getAllProviders(filter: String): List<ProviderDetails> {
+        val providers = Security.getProviders()
+        val listOfProviders = mutableListOf<ProviderDetails>()
+
+        providers.forEach { provider ->
+            val providerDetails = provider.entries.filter { it -> it.key.toString().contains(filter, true) }
+                .map { ProviderDetails(provider.name, it.key.toString()) }
+            listOfProviders += providerDetails
+        }
+        return listOfProviders
+    }
+
 
     fun getAllProviders(): List<ProviderDetails> {
         val providers = Security.getProviders()
