@@ -19,6 +19,9 @@ fun main(args: Array<String>) {
     val random = providers.getAllProviders("Random")
     random.forEach(::println)
 
+    providers.getAllProvidersFlatMap("Random").forEach(::println)
+
+
 }
 
 data class ProviderDetails(val providerName: String, val name: String)
@@ -28,6 +31,17 @@ class Providers {
         val providers = Security.getProviders()
 
         return providers.asList()
+    }
+
+    fun getAllProvidersFlatMap(filter: String): List<ProviderDetails> {
+        val providers = Security.getProviders()
+
+
+        return providers.flatMap { provider ->
+            provider.entries.filter { it -> it.key.toString().contains(filter, true) }
+                .map { ProviderDetails(provider.name, it.key.toString()) }
+        }
+
     }
 
     fun getAllProviders(filter: String): List<ProviderDetails> {
